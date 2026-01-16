@@ -446,7 +446,8 @@
                         id: 'a1',
                         name: 'Supino com Roldana',
                         sets: '4x12-15',
-                        <img src="Supino.jpg" alt="teste imagem">
+                        image: 'Supino.jpg',
+                        video: 'https://www.youtube.com/watch?v=gRVjAtPip0Y',
                         adaptation: 'Amarre a corda na roldana na altura do peito. Segure as pontas e empurre para frente como se estivesse fazendo supino. Quanto mais longe da parede, mais pesado fica.',
                         tips: 'Mantenha o core contraído e não curve as costas. Expire ao empurrar.'
                     },
@@ -454,7 +455,8 @@
                         id: 'a2',
                         name: 'Crucifixo com Roldana',
                         sets: '3x15',
-                        <img src="crucifixo-polia2.jpg"alt="Crucifixo com roldana: exercício para peito">
+                        image: 'crucifixo-polia2.jpg',
+                        video: 'https://www.youtube.com/watch?v=taI4XduLpTk',
                         adaptation: 'Roldana na altura dos ombros. Puxe as cordas de cada lado trazendo as mãos para frente, como se estivesse abraçando alguém.',
                         tips: 'Cotovelos levemente flexionados. Sinta o peito esticar e contrair.'
                     },
@@ -462,7 +464,8 @@
                         id: 'a3',
                         name: 'Flexão de Braço',
                         sets: '3x máximo',
-                        <img src="Flexão-braco.jpg" alt="fleca" />
+                        image: 'Flexão-braco.jpg',
+                        video: 'https://www.youtube.com/watch?v=IODxDxX7oi4',
                         adaptation: 'Se não conseguir flexão completa, apoie os joelhos no chão. Mãos na largura dos ombros.',
                         tips: 'Desça até o peito quase tocar o chão. Corpo reto como prancha.'
                     },
@@ -470,7 +473,8 @@
                         id: 'a4',
                         name: 'Tríceps na Roldana',
                         sets: '4x15',
-                        <img src="Tríceps-polia.jpg" alt="tríceps em pé" />
+                        image: 'Tríceps-polia.jpg',
+                        video: 'https://www.youtube.com/watch?v=2-LAMcpzODU',
                         adaptation: 'Roldana alta. Puxe a corda para baixo mantendo cotovelos fixos nas laterais do corpo. Só o antebraço se move.',
                         tips: 'Não balance o corpo. Cotovelos colados no tronco.'
                     },
@@ -478,7 +482,8 @@
                         id: 'a5',
                         name: 'Tríceps Testa (Galão)',
                         sets: '3x12',
-                        <img src="Tríceps-testa.jpg" alt="tríceps na testa" />
+                        image: 'Tríceps-testa.jpg',
+                        video: 'https://www.youtube.com/watch?v=d_KZxkY_0cM',
                         adaptation: 'Deitado no chão, segure o galão com as duas mãos. Desça até a testa dobrando só os cotovelos.',
                         tips: 'Braços perpendiculares ao chão. Só os cotovelos se movem.'
                     }
@@ -600,10 +605,10 @@
 
         function changeDay(day) {
             currentDay = day;
-            
+
             document.querySelectorAll('.day-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`.day-btn.day-${day.toLowerCase()}`).classList.add('active');
-            
+
             renderWorkout();
             updateProgress();
         }
@@ -611,7 +616,7 @@
         function renderWorkout() {
             const workout = workouts[currentDay];
             const content = document.getElementById('workout-content');
-            
+
             let html = `
                 <div class="workout-info day-${currentDay.toLowerCase()}">
                     <h2>${workout.name}</h2>
@@ -667,7 +672,7 @@
         function toggleDetails(id) {
             const details = document.getElementById(`details-${id}`);
             const arrow = document.getElementById(`arrow-${id}`);
-            
+
             details.classList.toggle('show');
             arrow.classList.toggle('rotated');
         }
@@ -676,10 +681,10 @@
             event.stopPropagation();
             completed[id] = !completed[id];
             localStorage.setItem('completed', JSON.stringify(completed));
-            
+
             const btn = event.target;
             btn.classList.toggle('completed');
-            
+
             updateProgress();
         }
 
@@ -688,11 +693,11 @@
             const completedCount = workout.exercises.filter(ex => completed[ex.id]).length;
             const total = workout.exercises.length;
             const percentage = Math.round((completedCount / total) * 100);
-            
+
             document.getElementById('progress-text').textContent = `${percentage}%`;
             document.getElementById('progress-bar').style.width = `${percentage}%`;
             document.getElementById('progress-bar').className = `progress-bar day-${currentDay.toLowerCase()}`;
-            
+
             const countEl = document.getElementById('completed-count');
             if (countEl) {
                 countEl.textContent = `✅ ${completedCount}/${total} exercícios`;
