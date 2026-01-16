@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="description" content="Guia de Treino Personalizado - Jean">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <title>💪 Guia de Treino - Jean</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-top: 20px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #aaa;
+            font-size: 1.1em;
+        }
+
+        .install-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .install-banner.show {
+            display: flex;
+        }
+
+        .install-banner p {
+            margin: 0;
+            font-size: 0.95em;
+        }
+
+        .install-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .install-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .day-selector {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .day-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #2d3748;
+            color: #cbd5e0;
+        }
+
+        .day-btn:hover {
+            background: #4a5568;
+            transform: translateY(-2px);
+        }
+
+        .day-btn.active {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .day-btn.day-a.active { background: #e53e3e; color: white; }
+        .day-btn.day-b.active { background: #3182ce; color: white; }
+        .day-btn.day-c.active { background: #38a169; color: white; }
+
+        .workout-info {
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .workout-info.day-a { background: #e53e3e; }
+        .workout-info.day-b { background: #3182ce; }
+        .workout-info.day-c { background: #38a169; }
+
+        .workout-info h2 {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        .workout-meta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            font-size: 0.95em;
+        }
+
+        .exercise-card {
+            background: #2d3748;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border: 1px solid #4a5568;
+        }
+
+        .exercise-header {
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s;
+        }
+
+        .exercise-header:hover {
+            background: #374151;
+        }
+
+        .exercise-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .exercise-number {
+            width: 40px;
+            height: 40px;
+            background: #4a5568;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .exercise-name h3 {
+            font-size: 1.3em;
+            margin-bottom: 5px;
+        }
+
+        .exercise-name p {
+            color: #cbd5e0;
+            font-size: 0.9em;
+        }
+
+        .exercise-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .check-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            background: #4a5568;
+            color: #cbd5e0;
+            font-size: 1.3em;
+            transition: all 0.3s;
+        }
+
+        .check-btn:hover {
+            background: #38a169;
+            color: white;
+        }
+
+        .check-btn.completed {
+            background: #38a169;
+            color: white;
+        }
+
+        .arrow {
+            font-size: 1.5em;
+            transition: transform 0.3s;
+        }
+
+        .arrow.rotated {
+            transform: rotate(180deg);
+        }
+
+        .exercise-details {
+            display: none;
+            padding: 20px;
+            border-top: 1px solid #4a5568;
+        }
+
+        .exercise-details.show {
+            display: block;
+        }
+
+        .exercise-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .info-box {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .adaptation-box {
+            background: rgba(236, 201, 75, 0.1);
+            border: 2px solid #ecc94b;
+        }
+
+        .adaptation-box h4 {
+            color: #ecc94b;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .tips-box {
+            background: rgba(66, 153, 225, 0.1);
+            border: 2px solid #4299e1;
+        }
+
+        .tips-box h4 {
+            color: #4299e1;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .video-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: #e53e3e;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: all 0.3s;
+        }
+
+        .video-btn:hover {
+            background: #c53030;
+            transform: translateY(-2px);
+        }
+
+        .progress-section {
+            background: #2d3748;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 20px;
+            background: #4a5568;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            transition: width 0.5s;
+        }
+
+        .progress-bar.day-a { background: #e53e3e; }
+        .progress-bar.day-b { background: #3182ce; }
+        .progress-bar.day-c { background: #38a169; }
+
+        .footer-tips {
+            background: linear-gradient(135deg, #6b46c1 0%, #d53f8c 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .footer-tips h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        .footer-tips p {
+            margin: 8px 0;
+            font-size: 0.95em;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .day-btn {
+                padding: 12px 20px;
+                font-size: 1em;
+            }
+
+            .workout-info h2 {
+                font-size: 1.5em;
+            }
+
+            .exercise-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .exercise-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            .install-banner {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💪 Guia de Treino</h1>
+            <p>Jean - Programa Personalizado</p>
+        </div>
+
+        <div class="install-banner" id="install-banner">
+            <p>📱 Instale este app na sua tela inicial para acesso rápido!</p>
+            <button class="install-btn" id="install-button">Instalar</button>
+        </div>
+
+        <div class="day-selector">
+            <button class="day-btn day-a active" onclick="changeDay('A')">DIA A</button>
+            <button class="day-btn day-b" onclick="changeDay('B')">DIA B</button>
+            <button class="day-btn day-c" onclick="changeDay('C')">DIA C</button>
+        </div>
+
+        <div id="workout-content"></div>
+
+        <div class="progress-section">
+            <div class="progress-header">
+                <span><strong>Progresso do Treino</strong></span>
+                <span id="progress-text">0%</span>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar day-a" id="progress-bar" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="footer-tips">
+            <h3>⚡ LEMBRE-SE:</h3>
+            <p>✓ Aquecimento: 5-10 min de alongamento antes</p>
+            <p>✓ Hidratação: Beba água entre as séries</p>
+            <p>✓ Respiração: Expire no esforço, inspire no relaxamento</p>
+            <p>✓ Descanso: 60-90 segundos entre séries</p>
+            <p>✓ Se sentir dor nas articulações, PARE!</p>
+        </div>
+    </div>
+
+    <script>
+        // PWA - Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(reg => console.log('Service Worker registrado!'))
+                .catch(err => console.log('Erro ao registrar Service Worker:', err));
+        }
+
+        // PWA - Install Banner
+        let deferredPrompt;
+        const installBanner = document.getElementById('install-banner');
+        const installButton = document.getElementById('install-button');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBanner.classList.add('show');
+        });
+
+        installButton.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`Usuário ${outcome === 'accepted' ? 'aceitou' : 'recusou'} instalar`);
+                deferredPrompt = null;
+                installBanner.classList.remove('show');
+            }
+        });
+
+        const workouts = {
+            A: {
+                name: 'PEITO E TRÍCEPS',
+                exercises: [
+                    {
+                        id: 'a1',
+                        name: 'Supino com Roldana',
+                        sets: '4x12-15',
+                        image: 'https://i.ytimg.com/vi/gRVjAtPip0Y/maxresdefault.jpg',
+                        video: 'https://www.youtube.com/watch?v=gRVjAtPip0Y',
+                        adaptation: 'Amarre a corda na roldana na altura do peito. Segure as pontas e empurre para frente como se estivesse fazendo supino. Quanto mais longe da parede, mais pesado fica.',
+                        tips: 'Mantenha o core contraído e não curve as costas. Expire ao empurrar.'
+                    },
+                    {
+                        id: 'a2',
+                        name: 'Crucifixo com Roldana',
+                        sets: '3x15',
+                        image: 'https://www.hipertrofia.org/blog/wp-content/uploads/2018/11/crucifixo-no-crossover.jpg',
+                        video: 'https://www.youtube.com/watch?v=taI4XduLpTk',
+                        adaptation: 'Roldana na altura dos ombros. Puxe as cordas de cada lado trazendo as mãos para frente, como se estivesse abraçando alguém.',
+                        tips: 'Cotovelos levemente flexionados. Sinta o peito esticar e contrair.'
+                    },
+                    {
+                        id: 'a3',
+                        name: 'Flexão de Braço',
+                        sets: '3x máximo',
+                        image: 'https://www.mundoboaforma.com.br/wp-content/uploads/2020/12/flexao-de-braco.jpg',
+                        video: 'https://www.youtube.com/watch?v=IODxDxX7oi4',
+                        adaptation: 'Se não conseguir flexão completa, apoie os joelhos no chão. Mãos na largura dos ombros.',
+                        tips: 'Desça até o peito quase tocar o chão. Corpo reto como prancha.'
+                    },
+                    {
+                        id: 'a4',
+                        name: 'Tríceps na Roldana',
+                        sets: '4x15',
+                        image: 'https://www.hipertrofia.org/blog/wp-content/uploads/2020/09/triceps-polia-corda.jpg',
+                        video: 'https://www.youtube.com/watch?v=2-LAMcpzODU',
+                        adaptation: 'Roldana alta. Puxe a corda para baixo mantendo cotovelos fixos nas laterais do corpo. Só o antebraço se move.',
+                        tips: 'Não balance o corpo. Cotovelos colados no tronco.'
+                    },
+                    {
+                        id: 'a5',
+                        name: 'Tríceps Testa (Galão)',
+                        sets: '3x12',
+                        image: 'https://treino.net/wp-content/uploads/2021/01/triceps-testa.jpg',
+                        video: 'https://www.youtube.com/watch?v=d_KZxkY_0cM',
+                        adaptation: 'Deitado no chão, segure o galão com as duas mãos. Desça até a testa dobrando só os cotovelos.',
+                        tips: 'Braços perpendiculares ao chão. Só os cotovelos se movem.'
+                    }
+                ]
+            },
+            B: {
+                name: 'COSTAS E BÍCEPS',
+                exercises: [
+                    {
+                        id: 'b1',
+                        name: 'Puxada Frontal',
+                        sets: '4x12-15',
+                        image: 'https://www.hipertrofia.org/blog/wp-content/uploads/2019/01/puxada-frontal.jpg',
+                        video: 'https://www.youtube.com/watch?v=CAwf7n6Luuc',
+                        adaptation: 'Roldana alta. Puxe a corda para baixo até o peito, abrindo os cotovelos para os lados. Aperte as costas no final.',
+                        tips: 'Peito para frente, ombros para trás. Imagine que está juntando as escápulas.'
+                    },
+                    {
+                        id: 'b2',
+                        name: 'Remada Baixa',
+                        sets: '4x12-15',
+                        image: 'https://www.hipertrofia.org/blog/wp-content/uploads/2019/02/remada-baixa-polia.jpg',
+                        video: 'https://www.youtube.com/watch?v=GZbfZ033f74',
+                        adaptation: 'Roldana baixa. Sentado ou de pé, puxe a corda em direção ao abdômen. Cotovelos vão para trás.',
+                        tips: 'Costas retas. Puxe com os cotovelos, não com as mãos.'
+                    },
+                    {
+                        id: 'b3',
+                        name: 'Pullover com Galão',
+                        sets: '3x15',
+                        image: 'https://www.hipertrofia.org/blog/wp-content/uploads/2020/06/pullover-com-halteres.jpg',
+                        video: 'https://www.youtube.com/watch?v=FK0MZNhlRLI',
+                        adaptation: 'Deitado, segure o galão com as duas mãos acima do peito. Leve o galão para trás da cabeça com braços esticados, depois volte.',
+                        tips: 'Movimento amplo. Sinta o alongamento das costas e peito.'
+                    },
+                    {
+                        id: 'b4',
+                        name: 'Rosca Direta (Galão)',
+                        sets: '4x12',
+                        image: 'https://www.mundoboaforma.com.br/wp-content/uploads/2020/11/rosca-direta-com-barra.jpg',
+                        video: 'https://www.youtube.com/watch?v=ykJmrZ5v0Oo',
+                        adaptation: 'De pé, segure o galão com as duas mãos (palmas para cima). Flexione os cotovelos levando o galão até o peito.',
+                        tips: 'Cotovelos fixos. Não balance o corpo. Controle na descida.'
+                    },
+                    {
+                        id: 'b5',
+                        name: 'Rosca Martelo (Galão)',
+                        sets: '3x12',
+                        image: 'https://www.hipertrofia.org/blog/wp-content/uploads/2019/09/rosca-martelo.jpg',
+                        video: 'https://www.youtube.com/watch?v=zC3nLlEvin4',
+                        adaptation: 'Mesmo movimento da rosca, mas segure o galão pela alça (palmas uma de frente para a outra).',
+                        tips: 'Movimento mais neutro para o punho. Trabalha mais o antebraço.'
+                    }
+                ]
+            },
+            C: {
+                name: 'OMBROS E CORE',
+                exercises: [
+                    {
+                        id: 'c1',
+                        name: 'Desenvolvimento (Galões)',
+                        sets: '4x12',
+                        image: 'https://www.hipertrofia.org/blog/wp-content/uploads/2019/03/desenvolvimento-com-halteres.jpg',
+                        video: 'https://www.youtube.com/watch?v=qEwKCR5JCog',
+                        adaptation: 'Sentado ou de pé, um galão em cada mão na altura dos ombros. Empurre para cima até esticar os braços.',
+                        tips: 'Não arquear as costas. Core contraído. Desça controlado.'
+                    },
+                    {
+                        id: 'c2',
+                        name: 'Elevação Lateral',
+                        sets: '4x15',
+                        image: 'https://www.mundoboaforma.com.br/wp-content/uploads/2020/11/elevacao-lateral-com-halteres.jpg',
+                        video: 'https://www.youtube.com/watch?v=3VcKaXpzqRo',
+                        adaptation: 'De pé, um galão em cada mão ao lado do corpo. Levante os braços para os lados até a altura dos ombros.',
+                        tips: 'Cotovelos levemente flexionados. Não suba muito acima dos ombros.'
+                    },
+                    {
+                        id: 'c3',
+                        name: 'Elevação Frontal',
+                        sets: '3x15',
+                        image: 'https://www.hipertrofia.org/blog/wp-content/uploads/2019/03/elevacao-frontal-com-halteres.jpg',
+                        video: 'https://www.youtube.com/watch?v=_RlRDWO2jfg',
+                        adaptation: 'Segure um galão com as duas mãos. Levante para frente até a altura dos olhos.',
+                        tips: 'Braços esticados. Movimento controlado. Não balance.'
+                    },
+                    {
+                        id: 'c4',
+                        name: 'Encolhimento',
+                        sets: '3x20',
+                        image: 'https://www.hipertrofia.org/blog/wp-content/uploads/2019/04/encolhimento-com-halteres.jpg',
+                        video: 'https://www.youtube.com/watch?v=cJRVVxmytaM',
+                        adaptation: 'Um galão em cada mão ao lado do corpo. Levante os ombros em direção às orelhas (encolha). Mantenha 1 segundo no topo.',
+                        tips: 'Não gire os ombros. Movimento vertical. Aperte o trapézio.'
+                    },
+                    {
+                        id: 'c5',
+                        name: 'Prancha',
+                        sets: '3x30-60seg',
+                        image: 'https://www.mundoboaforma.com.br/wp-content/uploads/2020/12/prancha-abdominal.jpg',
+                        video: 'https://www.youtube.com/watch?v=ASdvN_XEl_c',
+                        adaptation: 'Apoie os antebraços e pontas dos pés no chão. Corpo reto como prancha. Segure a posição.',
+                        tips: 'Glúteo contraído. Não deixe a barriga cair. Respire normal.'
+                    },
+                    {
+                        id: 'c6',
+                        name: 'Abdominal Crunch',
+                        sets: '3x20',
+                        image: 'https://www.mundoboaforma.com.br/wp-content/uploads/2020/12/abdominal-crunch.jpg',
+                        video: 'https://www.youtube.com/watch?v=Xyd_fa5zoEU',
+                        adaptation: 'Deitado de costas, joelhos flexionados, mãos na nuca. Levante apenas os ombros do chão contraindo o abdômen.',
+                        tips: 'Não puxe o pescoço. Olhe para cima. Expire ao subir.'
+                    }
+                ]
+            }
+        };
+
+        let currentDay = 'A';
+        let completed = JSON.parse(localStorage.getItem('completed') || '{}');
+
+        function changeDay(day) {
+            currentDay = day;
+            
+            document.querySelectorAll('.day-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.day-btn.day-${day.toLowerCase()}`).classList.add('active');
+            
+            renderWorkout();
+            updateProgress();
+        }
+
+        function renderWorkout() {
+            const workout = workouts[currentDay];
+            const content = document.getElementById('workout-content');
+            
+            let html = `
+                <div class="workout-info day-${currentDay.toLowerCase()}">
+                    <h2>${workout.name}</h2>
+                    <div class="workout-meta">
+                        <span>⏱️ 60-90 seg de descanso</span>
+                        <span id="completed-count">✅ 0/${workout.exercises.length} exercícios</span>
+                    </div>
+                </div>
+            `;
+
+            workout.exercises.forEach((ex, i) => {
+                const isCompleted = completed[ex.id] || false;
+                html += `
+                    <div class="exercise-card">
+                        <div class="exercise-header" onclick="toggleDetails('${ex.id}')">
+                            <div class="exercise-title">
+                                <div class="exercise-number">${i + 1}</div>
+                                <div class="exercise-name">
+                                    <h3>${ex.name}</h3>
+                                    <p>${ex.sets} repetições</p>
+                                </div>
+                            </div>
+                            <div class="exercise-actions">
+                                <button class="check-btn ${isCompleted ? 'completed' : ''}" 
+                                        onclick="toggleComplete(event, '${ex.id}')">
+                                    ✓
+                                </button>
+                                <span class="arrow" id="arrow-${ex.id}">▼</span>
+                            </div>
+                        </div>
+                        <div class="exercise-details" id="details-${ex.id}">
+                            <img src="${ex.image}" alt="${ex.name}" class="exercise-image">
+                            <div class="info-box adaptation-box">
+                                <h4>🔧 ADAPTAÇÃO CASEIRA:</h4>
+                                <p>${ex.adaptation}</p>
+                            </div>
+                            <div class="info-box tips-box">
+                                <h4>💡 DICAS:</h4>
+                                <p>${ex.tips}</p>
+                            </div>
+                            <a href="${ex.video}" target="_blank" class="video-btn">
+                                ▶️ Ver Vídeo no YouTube 🔗
+                            </a>
+                        </div>
+                    </div>
+                `;
+            });
+
+            content.innerHTML = html;
+            updateProgress();
+        }
+
+        function toggleDetails(id) {
+            const details = document.getElementById(`details-${id}`);
+            const arrow = document.getElementById(`arrow-${id}`);
+            
+            details.classList.toggle('show');
+            arrow.classList.toggle('rotated');
+        }
+
+        function toggleComplete(event, id) {
+            event.stopPropagation();
+            completed[id] = !completed[id];
+            localStorage.setItem('completed', JSON.stringify(completed));
+            
+            const btn = event.target;
+            btn.classList.toggle('completed');
+            
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const workout = workouts[currentDay];
+            const completedCount = workout.exercises.filter(ex => completed[ex.id]).length;
+            const total = workout.exercises.length;
+            const percentage = Math.round((completedCount / total) * 100);
+            
+            document.getElementById('progress-text').textContent = `${percentage}%`;
+            document.getElementById('progress-bar').style.width = `${percentage}%`;
+            document.getElementById('progress-bar').className = `progress-bar day-${currentDay.toLowerCase()}`;
+            
+            const countEl = document.getElementById('completed-count');
+            if (countEl) {
+                countEl.textContent = `✅ ${completedCount}/${total} exercícios`;
+            }
+        }
+
+        renderWorkout();
+    </script>
+</body>
+</html>
